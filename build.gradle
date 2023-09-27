@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 plugins {
     id 'java'
 }
@@ -36,5 +35,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
->>>>>>> 14ea752289ea9618fd975722741f8a1882668e9b
+    14ea752289ea9618fd975722741f8a1882668e9b
 }
