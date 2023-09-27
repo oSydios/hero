@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 plugins {
     id 'java'
 }
@@ -16,4 +17,24 @@ dependencies {
 
 test {
     useJUnitPlatform()
+=======
+plugins {
+    id 'java'
+}
+
+group = 'com.oSydios.hero'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+>>>>>>> 14ea752289ea9618fd975722741f8a1882668e9b
 }
