@@ -30,26 +30,15 @@ public class Game {
     private void draw() throws IOException {
         screen.refresh();
     }
-    public void run() {
-        try {
-            while (true) {
-                draw();
-                KeyStroke keyStroke = screen.readInput();
-                if (keyStroke != null) {
-                    processKey(keyStroke);
-                    if (((com.googlecode.lanterna.input.KeyStroke) keyStroke).getKeyType() == KeyType.Escape) {
-                        break;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
+    public void run() throws IOException {
+        while (true) {
+            draw();
+            KeyStroke key = screen.readInput();
+            if (key.getKeyType() == KeyType.Character && key.getCharacter() == 'q')
                 screen.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            if (key.getKeyType() == KeyType.EOF)
+                break;
+            processKey(key);
         }
     }
     private void processKey(KeyStroke key) {
