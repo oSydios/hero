@@ -1,5 +1,4 @@
 import com.googlecode.lanterna.TerminalSize;
-import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
@@ -12,7 +11,8 @@ import java.io.IOException;
 
 public class Game {
     private Screen screen;
-    private Hero hero;
+    private Arena arena;
+
     public Game() throws IOException {
         TerminalSize terminalSize = new TerminalSize(40, 20);
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
@@ -23,14 +23,15 @@ public class Game {
         screen.startScreen();
         screen.doResizeIfNecessary();
         screen.clear();
-        this.hero = new Hero(10, 10);
-        screen.setCharacter(hero.getPosition().getX(), hero.getPosition().getY(), TextCharacter.fromCharacter('X')[0]);
+        this.arena = new Arena(40, 20);
     }
+
     private void draw() throws IOException {
         screen.clear();
-        hero.draw(screen.newTextGraphics());
+        arena.draw(screen.newTextGraphics());
         screen.refresh();
     }
+
     public void run() throws IOException {
         while (true) {
             draw();
@@ -39,37 +40,10 @@ public class Game {
                 screen.close();
             if (key.getKeyType() == KeyType.EOF)
                 break;
-            processKey(key);
+            arena.processKey(key);
         }
     }
-    private void moveHero(Position position) {
-        hero.setPosition(position);
-    }
-    private void processKey(KeyStroke key) {
-        System.out.println(key);
-        switch (key.getKeyType()) {
-            case ArrowUp:
-                moveHero(hero.moveUp());
-                break;
-            case ArrowDown:
-                moveHero(hero.moveDown());
-                break;
-            case ArrowRight:
-                moveHero(hero.moveRight());
-                break;
-            case ArrowLeft:
-                moveHero(hero.moveLeft());
-                break;
-            default:
-        }
-        try {
-            screen.clear();
-            screen.setCharacter(hero.getPosition().getX(), hero.getPosition().getY(), TextCharacter.fromCharacter('X')[0]);
-            screen.refresh();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
     public static void main(String[] args) {
         try {
             Game game = new Game();
