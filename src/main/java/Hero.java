@@ -29,7 +29,8 @@ public class Hero {
     }
     public void draw(TextGraphics graphics) {
         graphics.setForegroundColor(TextColor.Factory.fromString("#ff5533"));
+        //graphics.setBackgroundColor(TextColor.Factory.fromString("#336699"));
         graphics.enableModifiers(SGR.BOLD);
-        graphics.putString(position.getX(), position.getY(), "X");
+        graphics.putString(new TerminalPosition(position.getX(), position.getY()), "X");
     }
 }

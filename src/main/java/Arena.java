@@ -23,7 +23,8 @@ public class Arena {
             hero.setPosition(position);
     }
     public void draw(TextGraphics graphics) {
-        // Draw the hero
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#176312"));
+        graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
         hero.draw(graphics);
     }
     public void processKey(KeyStroke key) {
