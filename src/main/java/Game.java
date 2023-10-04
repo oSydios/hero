@@ -7,25 +7,23 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.input.KeyStroke;
 
-
-import javax.swing.*;
 import java.io.IOException;
 
 public class Game {
     private Screen screen;
-    private int x = 10;
-    private int y = 10;
+    private Hero hero;
     public Game() throws IOException {
         TerminalSize terminalSize = new TerminalSize(40, 20);
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
                 .setInitialTerminalSize(terminalSize);
         Terminal terminal = terminalFactory.createTerminal();
         this.screen = new TerminalScreen(terminal);
-        screen.setCursorPosition(null); // we don't need a cursor
-        screen.startScreen(); // screens must be started
-        screen.doResizeIfNecessary(); // resize screen if necessary
+        screen.setCursorPosition(null);
+        screen.startScreen();
+        screen.doResizeIfNecessary();
         screen.clear();
-        screen.setCharacter(x, y, TextCharacter.fromCharacter('X')[0]);
+        this.hero = new Hero(10, 10);
+        screen.setCharacter(hero.getX(), hero.getY(), TextCharacter.fromCharacter('X')[0]);
     }
     private void draw() throws IOException {
         screen.refresh();
@@ -45,28 +43,27 @@ public class Game {
         System.out.println(key);
         switch (key.getKeyType()) {
             case ArrowUp:
-                y--;
+                hero.setY(hero.getY() - 1);
                 break;
             case ArrowDown:
-                y++;
+                hero.setY(hero.getY() + 1);
                 break;
             case ArrowRight:
-                x++;
+                hero.setX(hero.getX() + 1);
                 break;
             case ArrowLeft:
-                x--;
+                hero.setX(hero.getX() - 1);
                 break;
             default:
         }
         try {
             screen.clear();
-            screen.setCharacter(x, y, TextCharacter.fromCharacter('X')[0]);
+            screen.setCharacter(hero.getX(), hero.getY(), TextCharacter.fromCharacter('X')[0]);
             screen.refresh();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public static void main(String[] args) {
         try {
             Game game = new Game();
