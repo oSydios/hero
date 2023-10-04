@@ -1,5 +1,6 @@
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
+import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
@@ -23,9 +24,11 @@ public class Game {
         screen.doResizeIfNecessary();
         screen.clear();
         this.hero = new Hero(10, 10);
-        screen.setCharacter(hero.getX(), hero.getY(), TextCharacter.fromCharacter('X')[0]);
+        screen.setCharacter(hero.getPosition().getX(), hero.getPosition().getY(), TextCharacter.fromCharacter('X')[0]);
     }
     private void draw() throws IOException {
+        screen.clear();
+        hero.draw(screen.newTextGraphics());
         screen.refresh();
     }
     public void run() throws IOException {
@@ -39,26 +42,29 @@ public class Game {
             processKey(key);
         }
     }
+    private void moveHero(Position position) {
+        hero.setPosition(position);
+    }
     private void processKey(KeyStroke key) {
         System.out.println(key);
         switch (key.getKeyType()) {
             case ArrowUp:
-                hero.setY(hero.getY() - 1);
+                moveHero(hero.moveUp());
                 break;
             case ArrowDown:
-                hero.setY(hero.getY() + 1);
+                moveHero(hero.moveDown());
                 break;
             case ArrowRight:
-                hero.setX(hero.getX() + 1);
+                moveHero(hero.moveRight());
                 break;
             case ArrowLeft:
-                hero.setX(hero.getX() - 1);
+                moveHero(hero.moveLeft());
                 break;
             default:
         }
         try {
             screen.clear();
-            screen.setCharacter(hero.getX(), hero.getY(), TextCharacter.fromCharacter('X')[0]);
+            screen.setCharacter(hero.getPosition().getX(), hero.getPosition().getY(), TextCharacter.fromCharacter('X')[0]);
             screen.refresh();
         } catch (IOException e) {
             e.printStackTrace();
