@@ -14,7 +14,7 @@ public class Game {
     private Arena arena;
 
     public Game() throws IOException {
-        TerminalSize terminalSize = new TerminalSize(40, 20);
+        TerminalSize terminalSize = new TerminalSize(60, 30);
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
                 .setInitialTerminalSize(terminalSize);
         Terminal terminal = terminalFactory.createTerminal();
@@ -23,7 +23,7 @@ public class Game {
         screen.startScreen();
         screen.doResizeIfNecessary();
         screen.clear();
-        this.arena = new Arena(40, 20);
+        this.arena = new Arena(60, 30);
     }
 
     private void draw() throws IOException {
