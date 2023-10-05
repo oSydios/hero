@@ -7,13 +7,11 @@ import com.googlecode.lanterna.input.KeyType;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class Arena {
     private int width;
     private int height;
     private Hero hero;
     private List<Wall> walls;
-
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
@@ -40,7 +38,6 @@ public class Arena {
         }
         return position.getX() >= 0 && position.getX() < width && position.getY() >= 0 && position.getY() < height;
     }
-
     public void moveHero(Position position) {
         if (canHeroMove(position))
             hero.setPosition(position);
