@@ -99,7 +99,6 @@ public class Arena {
             }
         }
     }
-
     private void spawnNewCoin() {
         Random random = new Random();
         Coin newCoin;
