@@ -68,6 +68,13 @@ public class Arena {
         }
         return false;
     }
+    public void moveHero(Position position) {
+        if (canHeroMove(position)) {
+            hero.setPosition(position);
+            retrieveCoins();
+            verifyMonsterCollisions();
+        }
+    }
     private boolean canHeroMove(Position position) {
         for (Wall wall : walls) {
             if (wall.getPosition().equals(position)) {
@@ -76,20 +83,26 @@ public class Arena {
         }
         return position.getX() >= 0 && position.getX() < width && position.getY() >= 0 && position.getY() < height;
     }
-    public void moveHero(Position position) {
-        if (canHeroMove(position)) {
-            hero.setPosition(position);
-            retrieveCoins();
-            verifyMonsterCollisions();
-        }
-    }
     private void retrieveCoins() {
+        List<Coin> collectedCoins = new ArrayList<>();
         for (Coin coin : coins) {
             if (coin.getPosition().equals(hero.getPosition())) {
-                coins.remove(coin);
-                break;
+                collectedCoins.add(coin);
             }
         }
+        coins.removeAll(collectedCoins);
+        while (coins.size() < 5) {
+            addNewCoin();
+        }
+    }
+    private void addNewCoin() {
+        Random random = new Random();
+        Coin newCoin;
+        do {
+            newCoin = new Coin(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1);
+        } while (isCoinOverlapping(newCoin) || newCoin.getPosition().equals(hero.getPosition()));
+
+        coins.add(newCoin);
     }
     private void verifyMonsterCollisions() {
         for (Monster monster : monsters) {
