@@ -5,6 +5,7 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 public class Arena {
@@ -14,14 +15,15 @@ public class Arena {
     private List<Wall> walls;
     private List<Coin> coins;
     private List<Monster> monsters;
-
+    private int score;
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
         this.hero = new Hero(width / 2, height / 2);
         this.walls = createWalls();
         this.coins = createCoins();
-        this.monsters = createMonsters();
+        this.monsters = new ArrayList<>();
+        this.score = 0;
     }
     private List<Monster> createMonsters() {
         Random random = new Random();
@@ -68,13 +70,6 @@ public class Arena {
         }
         return false;
     }
-    public void moveHero(Position position) {
-        if (canHeroMove(position)) {
-            hero.setPosition(position);
-            retrieveCoins();
-            verifyMonsterCollisions();
-        }
-    }
     private boolean canHeroMove(Position position) {
         for (Wall wall : walls) {
             if (wall.getPosition().equals(position)) {
@@ -83,25 +78,34 @@ public class Arena {
         }
         return position.getX() >= 0 && position.getX() < width && position.getY() >= 0 && position.getY() < height;
     }
-    private void retrieveCoins() {
-        List<Coin> collectedCoins = new ArrayList<>();
-        for (Coin coin : coins) {
-            if (coin.getPosition().equals(hero.getPosition())) {
-                collectedCoins.add(coin);
-            }
-        }
-        coins.removeAll(collectedCoins);
-        while (coins.size() < 5) {
-            addNewCoin();
+    public void moveHero(Position position) {
+        if (canHeroMove(position)) {
+            hero.setPosition(position);
+            retrieveCoins();
+            verifyMonsterCollisions();
+            updateScore();
         }
     }
-    private void addNewCoin() {
+    private void retrieveCoins() {
+        Iterator<Coin> iterator = coins.iterator();
+        while (iterator.hasNext()) {
+            Coin coin = iterator.next();
+            if (coin.getPosition().equals(hero.getPosition())) {
+                iterator.remove();
+                spawnNewCoin();
+                score++;
+                spawnMonsterFlag = true;
+                break;
+            }
+        }
+    }
+
+    private void spawnNewCoin() {
         Random random = new Random();
         Coin newCoin;
         do {
             newCoin = new Coin(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1);
-        } while (isCoinOverlapping(newCoin) || newCoin.getPosition().equals(hero.getPosition()));
-
+        } while (isCoinOverlapping(newCoin));
         coins.add(newCoin);
     }
     private void verifyMonsterCollisions() {
@@ -129,6 +133,16 @@ public class Arena {
         }
         return position.getX() >= 0 && position.getX() < width && position.getY() >= 0 && position.getY() < height;
     }
+    private boolean spawnMonsterFlag = true;
+    private void updateScore() {
+        if (score !=0 && score % 5 == 0 && spawnMonsterFlag) {
+            monsters.add(new Monster(width / 2, height / 2));
+            spawnMonsterFlag = false;
+        }
+    }
+    public int getScore() {
+        return score;
+    }
     public void draw(TextGraphics graphics) {
         graphics.setBackgroundColor(TextColor.Factory.fromString("#90EE90"));
         graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
@@ -142,6 +156,9 @@ public class Arena {
         for (Monster monster : monsters) {
             monster.draw(graphics);
         }
+        graphics.setForegroundColor(TextColor.Factory.fromString("#000000"));
+        graphics.putString(new TerminalPosition(width - 9, height - 1), "Score: " + score);
+        graphics.putString(new TerminalPosition(1, height - 1), "Monsters: " + monsters.size());
     }
     public void processKey(KeyStroke key) {
         System.out.println(key);
