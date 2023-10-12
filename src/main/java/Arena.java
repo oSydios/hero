@@ -111,6 +111,7 @@ public class Arena {
         for (Monster monster : monsters) {
             if (monster.getPosition().equals(hero.getPosition())) {
                 System.out.println("Skill Issue");
+                System.out.println(score);
                 System.exit(0);
             }
         }
